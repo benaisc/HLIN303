@@ -1,5 +1,5 @@
 #include "fonction.h"
-int taille_c(char * p){
+int taille_c(char * p){//Il recoit un char car tabNoeud[i].code est passé comme une string qui sera lue "char" par "char"
   int j=0;
   while(p[j]!='\0')
     {
@@ -54,12 +54,12 @@ int deuxp(int a){
 }
 
 void plus_une_case(char * a){
-int t=taille_c(a);
+  int t=taille_c(a);
  a=realloc(a, sizeof(char)*(t+1));
   a[t]='0';
   }
 
-int reste( unsigned int *tab){
+int reste(unsigned int *tab){
   int reste=0;  
   int i;
   for(i=0;i<8;i++){
