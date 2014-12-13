@@ -242,11 +242,9 @@ int main(int argc, char* argv[]){
   }
   int der=convert_b_d(temp);
   fwrite(der,x,1,y);
+  free(temp);
  }
- for(i=0;i<8;i++){
-  delete tabCodes[i];
-  delete temp[i];
- }
+  free(tabCodes);
   fclose(x);
   fclose(y);
 
