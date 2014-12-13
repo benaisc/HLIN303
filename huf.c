@@ -222,7 +222,7 @@ int main(int argc, char* argv[]){
        }
        int pp=0;
        pp=convert_b_d(tabCodes);
-        fwrite(pp,sizeof(int),1,y);
+        fwrite(&pp,sizeof(int),1,y);
         taillefin+=1;
         init(tabCodes);
         rest=reste(tabCodes);
@@ -244,7 +244,7 @@ int main(int argc, char* argv[]){
   }
   int der=0;
   der=convert_b_d(temp);
-  fwrite(der,sizeof(int),1,y);
+  fwrite(&der,sizeof(int),1,y);
   free(temp);
  }
   free(tabCodes);
