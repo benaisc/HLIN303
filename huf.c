@@ -198,48 +198,52 @@ int main(int argc, char* argv[]){
     while(k!=tabNoeud[i].symbole){//cherche l'indice du tabNoeud correspondant au caractère lu
      i+=1;
    }
-    int reste=reste(tabCodes);
+    int restes=reste(tabCodes);
     int lcode=taille_c(tabNoeud[i].code);
     int m=0;
-    if(lcode <= reste){//si y'à assez d'espace dans tabCodes il y fou le tabNoeud[i].code correspondant et passe au char suivant
+    if(lcode <= restes){//si y'à assez d'espace dans tabCodes il y fou le tabNoeud[i].code correspondant et passe au char suivant
     int j=0;
      for(j=0;j<lcode;j++){
-        tabCodes[8-reste]=tabNoeud[i].code[m];
+        tabCodes[8-restes]=tabNoeud[i].code[m];
         m+=1;
-        reste-=1;
+        restes-=1;
      }
     }
    else{//s'il n'y à pas assez de place
      while(m<lcode){ //tant qu'on est pas au bout du code
-        while(reste!=0){//et tant qu'il y a de la place, tu rempli
-	 tabCodes[8-reste]=tabNoeud[i].code[m];
+        while(restes!=0){//et tant qu'il y a de la place, tu rempli
+	 tabCodes[8-restes]=tabNoeud[i].code[m];
   	m+=1;
-	 reste-=1;
+	 restes-=1;
        }
-        fwrite(convert_b_d(tabCodes),x,1,y);
+       int pp=convert_b_d(tabCodes);
+        fwrite(pp,x,1,y);
         taillefin+=1;
         init(tabCodes);
-        reste=reste(tabCodes);
+        restes=reste(tabCodes);
       }
   }
  }
  /*Vidage du buffer tabCodes s'il y à des restes*/
-  reste=reste(tabCodes);
+  restes=reste(tabCodes);
   if (k==EOF && reste!=8){
   unsigned int *temp=malloc(sizeof(unsigned int)*8);
-  for(i=0;i<reste;i++){
+  for(i=0;i<restes;i++){
   	temp[i]=0;
   }
   i=0;
     while(tabCodes[i] != 2){
-     temp[reste]=tabCodes[i];
+     temp[restes]=tabCodes[i];
      i+=1;
      reste+=1;
   }
-  fwrite(convert_b_d(temp),x,1,y);
+  int der=convert_b_d(temp);
+  fwrite(der,x,1,y);
+ }
+ for(i=0;i<8;i++){
+  delete[] tabCodes;
   delete[] temp;
  }
-  delete[] tabCodes;
   fclose(x);
   fclose(y);
 
