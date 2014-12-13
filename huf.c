@@ -189,6 +189,9 @@ int main(int argc, char* argv[]){
   FILE *x=fopen(argv[1],"r");
   FILE *y=fopen("fichier_huf","w");
   int k=0;
+  int rest=0;
+  int lcode=0;
+  int m=0;
   unsigned int *tabCodes=malloc(sizeof(unsigned int)*8);
   float taillefin=0;
   init(tabCodes);
@@ -198,44 +201,44 @@ int main(int argc, char* argv[]){
     while(k!=tabNoeud[i].symbole){//cherche l'indice du tabNoeud correspondant au caractère lu
      i+=1;
    }
-    int restes=reste(tabCodes);
-    int lcode=taille_c(tabNoeud[i].code);
-    int m=0;
+    rest=reste(tabCodes);
+    lcode=taille_c(tabNoeud[i].code);
+    m=0;
     if(lcode <= restes){//si y'à assez d'espace dans tabCodes il y fou le tabNoeud[i].code correspondant et passe au char suivant
     int j=0;
      for(j=0;j<lcode;j++){
-        tabCodes[8-restes]=tabNoeud[i].code[m];
+        tabCodes[8-rest]=tabNoeud[i].code[m];
         m+=1;
-        restes-=1;
+        rest-=1;
      }
     }
    else{//s'il n'y à pas assez de place
      while(m<lcode){ //tant qu'on est pas au bout du code
-        while(restes!=0){//et tant qu'il y a de la place, tu rempli
-	 tabCodes[8-restes]=tabNoeud[i].code[m];
+        while(rest!=0){//et tant qu'il y a de la place, tu rempli
+	 tabCodes[8-rest]=tabNoeud[i].code[m];
   	m+=1;
-	 restes-=1;
+	 rest-=1;
        }
        int pp=convert_b_d(tabCodes);
         fwrite(pp,x,1,y);
         taillefin+=1;
         init(tabCodes);
-        restes=reste(tabCodes);
+        rest=reste(tabCodes);
       }
   }
  }
  /*Vidage du buffer tabCodes s'il y à des restes*/
-  restes=reste(tabCodes);
-  if (k==EOF && reste!=8){
+  rest=reste(tabCodes);
+  if (k==EOF && rest!=8){
   unsigned int *temp=malloc(sizeof(unsigned int)*8);
-  for(i=0;i<restes;i++){
+  for(i=0;i<rest;i++){
   	temp[i]=0;
   }
   i=0;
     while(tabCodes[i] != 2){
-     temp[restes]=tabCodes[i];
+     temp[rest]=tabCodes[i];
      i+=1;
-     reste+=1;
+     rest+=1;
   }
   int der=convert_b_d(temp);
   fwrite(der,x,1,y);
