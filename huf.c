@@ -215,7 +215,7 @@ int main(int argc, char* argv[]){
         rest-=1;
      }
            for(cpt=0;cpt<8;cpt++){
-		printf("|%d",tabCodes[cpt]);
+		printf("|%c",tabCodes[cpt]);
 	}
     }
    else{//s'il n'y à pas assez de place
@@ -233,7 +233,7 @@ int main(int argc, char* argv[]){
         rest=reste(tabCodes);
       }
       for(cpt=0;cpt<8;cpt++){
-		printf("|%d",tabCodes[cpt]);
+		printf("|%c",tabCodes[cpt]);
 	}
   }
  }
