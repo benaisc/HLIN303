@@ -244,8 +244,8 @@ int main(int argc, char* argv[]){
   fwrite(der,x,1,y);
  }
  for(i=0;i<8;i++){
-  delete[] tabCodes;
-  delete[] temp;
+  delete tabCodes[i];
+  delete temp[i];
  }
   fclose(x);
   fclose(y);
