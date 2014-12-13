@@ -191,10 +191,10 @@ int main(int argc, char* argv[]){
   int k=0;
   unsigned int *tabCodes=malloc(sizeof(unsigned int)*8);
   float taillefin=0;
-  i=0;
   init(tabCodes);
 
   while(EOF!=(k=fgetc(x))){
+  i=0;
     while(k!=tabNoeud[i].symbole){//cherche l'indice du tabNoeud correspondant au caractère lu
      i+=1;
    }
@@ -202,32 +202,42 @@ int main(int argc, char* argv[]){
     int lcode=taille_c(tabNoeud[i].code);
     int m=0;
     if(lcode <= reste){//si y'à assez d'espace dans tabCodes il y fou le tabNoeud[i].code correspondant et passe au char suivant
-     for(i=0;i<lcode;i++){
+    int j=0;
+     for(j=0;j<lcode;j++){
         tabCodes[8-reste]=tabNoeud[i].code[m];
+        m+=1;
+        reste-=1;
      }
     }
    else{//s'il n'y à pas assez de place
-     while(m<lcode){ //tant qu'on est pas au bout du code : 1111 -> lcode=4, m va de 0 à 3
+     while(m<lcode){ //tant qu'on est pas au bout du code
         while(reste!=0){//et tant qu'il y a de la place, tu rempli
 	 tabCodes[8-reste]=tabNoeud[i].code[m];
   	m+=1;
 	 reste-=1;
-  	lcode-=1;
        }
         fwrite(convert_b_d(tabCodes),x,1,y);
+        taillefin+=1;
         init(tabCodes);
         reste=reste(tabCodes);
       }
   }
-  taillefin+=1;
  }
-  if (k==EOF){
+ /*Vidage du buffer tabCodes s'il y à des restes*/
   reste=reste(tabCodes);
-    while(reste != 0){
-     tabCodes[8-reste]=0;//Attention il va falloir differencier ces 0 des 0 de codage
-     reste-=1;
+  if (k==EOF && reste!=8){
+  unsigned int *temp=malloc(sizeof(unsigned int)*8);
+  for(i=0;i<reste;i++){
+  	temp[i]=0;
   }
-  fwrite(convert_b_d(tabCodes),x,1,y);
+  i=0;
+    while(tabCodes[i] != 2){
+     temp[reste]=tabCodes[i];
+     i+=1;
+     reste+=1;
+  }
+  fwrite(convert_b_d(temp),x,1,y);
+  delete[] temp;
  }
   delete[] tabCodes;
   fclose(x);
@@ -235,12 +245,14 @@ int main(int argc, char* argv[]){
 
   /*Calcul longeur moyenne de codage*/
   float lm=0;
+  int p=0;
+  i=0;
   for(i=0;i<nbfeuille;i++){
-    while(tabNoeud[i].code[j]!='\0'){
-  j+=1;
+    while(tabNoeud[i].code[p]!='\0'){
+  p+=1;
     }
-    lm+=j*tabNoeud[i].val;
-    j=0;
+    lm+=p*tabNoeud[i].val;
+    p=0;
   }
   lm=lm/(tailledep/8);
   printf("Longeur moyenne de codage=%.2f bits\n",lm);
