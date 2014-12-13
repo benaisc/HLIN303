@@ -185,10 +185,9 @@ int main(int argc, char* argv[]){
     fclose(g);
     fclose(h);
   */
-
   /*Remplissage d'un fichier compressé*/
   FILE *x=fopen(argv[1],"r");
-  FILE *y=fopen("fichier_huf","w");
+  FILE *y=fopen("fichierhuf.txt","a");
   int k=0;
   int rest=0;
   int lcode=0;
@@ -196,14 +195,17 @@ int main(int argc, char* argv[]){
   unsigned int *tabCodes=malloc(sizeof(unsigned int)*8);
   float taillefin=0;
   init(tabCodes);
-
+	int cpt=0;
   while(EOF!=(k=fgetc(x))){
+	  printf("\n__%c__\n",k);
   i=0;
     while(k!=tabNoeud[i].symbole){//cherche l'indice du tabNoeud correspondant au caractère lu
      i+=1;
    }
     rest=reste(tabCodes);
+    printf("rest=%d\n",rest);
     lcode=taille_c(tabNoeud[i].code);
+    printf("lcode=%d\n",lcode);
     m=0;
     if(lcode <= rest){//si y'à assez d'espace dans tabCodes il y fou le tabNoeud[i].code correspondant et passe au char suivant
     int j=0;
@@ -212,6 +214,9 @@ int main(int argc, char* argv[]){
         m+=1;
         rest-=1;
      }
+           for(cpt=0;cpt<8;cpt++){
+		printf("|%d",tabCodes[cpt]);
+	}
     }
    else{//s'il n'y à pas assez de place
      while(m<lcode){ //tant qu'on est pas au bout du code
@@ -222,11 +227,14 @@ int main(int argc, char* argv[]){
        }
        int pp=0;
        pp=convert_b_d(tabCodes);
-        fwrite(&pp,sizeof(int),1,y);
+        fwrite(&pp,sizeof(pp),1,y);
         taillefin+=1;
         init(tabCodes);
         rest=reste(tabCodes);
       }
+      for(cpt=0;cpt<8;cpt++){
+		printf("|%d",tabCodes[cpt]);
+	}
   }
  }
  /*Vidage du buffer tabCodes s'il y à des restes*/
