@@ -204,7 +204,7 @@ int main(int argc, char* argv[]){
     rest=reste(tabCodes);
     lcode=taille_c(tabNoeud[i].code);
     m=0;
-    if(lcode <= restes){//si y'à assez d'espace dans tabCodes il y fou le tabNoeud[i].code correspondant et passe au char suivant
+    if(lcode <= rest){//si y'à assez d'espace dans tabCodes il y fou le tabNoeud[i].code correspondant et passe au char suivant
     int j=0;
      for(j=0;j<lcode;j++){
         tabCodes[8-rest]=tabNoeud[i].code[m];
