@@ -226,7 +226,7 @@ int main(int argc, char* argv[]){
 				}
 				printf("\n");
        printf("tabCodes lu comme un int : %d\n  comme un char : %c\n",*tabCodes,*tabCodes);
-       fwrite(&tabCodes,sizeof(unsigned char),1,y);
+       fwrite(tabCodes,sizeof(unsigned int),8,y);
        taillefin+=1;
        init(tabCodes);
        rest=reste(tabCodes);
@@ -258,7 +258,7 @@ int main(int argc, char* argv[]){
   //int der=0;
   //der=convert_b_d(temp);
   printf("temp lu en entier=%d\nlu en char : %c\n",*temp,*temp);
-  fwrite(&temp,sizeof(unsigned char),1,y);
+  fwrite(temp,sizeof(unsigned int),8,y);
   free(temp);
  }
   free(tabCodes);
