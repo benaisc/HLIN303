@@ -16,43 +16,48 @@ int convert_b_d(unsigned int * p){
   }
   return result;
 }
-
+/*
 unsigned int* convert_d_b(int a){
   int i;
   unsigned int *result=malloc(8*sizeof(unsigned int));
-  for(i=7;i>-1;i--)
-    {
-      if((a-deuxp(i))>=0)
-	{
+  for(i=7;i>-1;i--){
+      if((a-deuxp(i))>=0){
 	  result[i]=1;
-	  a=a-deuxp(i);
-	}
-      else
-	{
-	  result[i]=0;
-	}
-    }
-  return result;
-}
-
-
+	  a=a-deuxp(i);}
+      else{
+	  result[i]=0;}}
+  return result;}
+  
 int deuxp(int a){
   int i;
   int result=1;
-  if(a==0)
-    {
-      return 1;
-    }
-  if(a==1)
-    {
-      return 2;
-    }
+  if(a==0){
+      return 1;}
+  if(a==1){
+      return 2;}
   for(i=0;i<a;i++){
-    result=2*result;
-  }
+    result=2*result;}
+  return result;}
+*/
+unsigned char* convert_d_b(int a)
+{
+    int i=0;
+    unsigned char* octet = malloc(8);
+ 
+    for(i=0; i<8; i++){
+        octet[i] = (a & 1) + '0';
+        a >>= 1;
+    }
+    return octet;
+}
+int deuxp(int a){
+  int result=1;
+	while(a>0){
+		result*=2;
+		a--;
+	}
   return result;
 }
-
 void plus_une_case(char * a){
   int t=taille_c(a);
  a=realloc(a, sizeof(char)*(t+1));
