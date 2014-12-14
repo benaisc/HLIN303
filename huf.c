@@ -252,7 +252,7 @@ int main(int argc, char* argv[]){
   	temp[i]='0';
   }
   i=0;
-    while(tabCodes[i] != 2){
+    while(tabCodes[i] != '2'){
      temp[rest]=tabCodes[i];
      i+=1;
      rest+=1;
