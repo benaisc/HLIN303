@@ -186,7 +186,7 @@ int main(int argc, char* argv[]){
     fclose(h);
   */
   /*Remplissage d'un fichier compressé*/
-  FILE *x=fopen(argv[1],"r");
+ FILE *x=fopen(argv[1],"r");
   FILE *y=fopen("fichierhuf.txt","a");
   int k=0;
   int rest=0;
@@ -196,6 +196,7 @@ int main(int argc, char* argv[]){
   float taillefin=0;
   init(tabCodes);
 	int cpt=0;
+	
   while(EOF!=(k=fgetc(x))){
 	  printf("\n__%c__\n",k);
   i=0;
@@ -203,9 +204,8 @@ int main(int argc, char* argv[]){
      i+=1;
    }
     rest=reste(tabCodes);
-    printf("rest=%d\n",rest);
     lcode=taille_c(tabNoeud[i].code);
-    printf("lcode=%d\n",lcode);
+    printf("rest=%d   lcode=%d\n",rest,lcode);
     m=0;
     if(lcode <= rest){//si y'à assez d'espace dans tabCodes il y fou le tabNoeud[i].code correspondant et passe au char suivant
     int j=0;
@@ -213,36 +213,43 @@ int main(int argc, char* argv[]){
         tabCodes[8-rest]=tabNoeud[i].code[m];
         m+=1;
         rest-=1;
-     }
-           for(cpt=0;cpt<8;cpt++){
-		printf("|%c",tabCodes[cpt]);
-	}
+		}
     }
    else{//s'il n'y à pas assez de place
-     while(m<lcode){ //tant qu'on est pas au bout du code
         while(rest!=0){//et tant qu'il y a de la place, tu rempli
-	 tabCodes[8-rest]=tabNoeud[i].code[m];
-  	m+=1;
-	 rest-=1;
-       }
+			tabCodes[8-rest]=tabNoeud[i].code[m];
+			m+=1;
+			rest-=1;
+			printf("JE SUIS ICI : rest=%d   m=%d\n",rest,m);
+			}
+		for(cpt=0;cpt<8;cpt++){
+		printf("|%c",tabCodes[cpt]);
+		}
+		printf("\nICI\n");
        int pp=0;
        pp=convert_b_d(tabCodes);
-        fwrite(&pp,sizeof(pp),1,y);
-        taillefin+=1;
-        init(tabCodes);
-        rest=reste(tabCodes);
+       fwrite(&pp,sizeof(pp),1,y);
+       taillefin+=1;
+       init(tabCodes);
+       rest=reste(tabCodes);
+		while(m<lcode){
+			tabCodes[8-rest]=tabNoeud[i].code[m];
+			m+=1;
+			rest-=1;
+			printf("JE SUIS LA : rest=%d   m=%d\n",rest,m);
+			} 
       }
       for(cpt=0;cpt<8;cpt++){
 		printf("|%c",tabCodes[cpt]);
-	}
-  }
+		}
+		printf("\nLA\n");
  }
+ 
  /*Vidage du buffer tabCodes s'il y à des restes*/
-  rest=reste(tabCodes);
   if (k==EOF && rest!=8){
   unsigned int *temp=malloc(sizeof(unsigned int)*8);
   for(i=0;i<rest;i++){
-  	temp[i]=0;
+  	temp[i]='0';
   }
   i=0;
     while(tabCodes[i] != 2){
@@ -250,6 +257,10 @@ int main(int argc, char* argv[]){
      i+=1;
      rest+=1;
   }
+      for(cpt=0;cpt<8;cpt++){
+		printf("|%c",temp[cpt]);
+		}
+		printf("\n<---\n");
   int der=0;
   der=convert_b_d(temp);
   fwrite(&der,sizeof(int),1,y);
