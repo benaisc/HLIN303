@@ -186,7 +186,7 @@ int main(int argc, char* argv[]){
     fclose(h);
   */
   /*Remplissage d'un fichier compressé*/
- FILE *x=fopen(argv[1],"r");
+  FILE *x=fopen(argv[1],"r");
   FILE *y=fopen("fichierhuf.txt","a");
   int k=0;
   int rest=0;
@@ -198,14 +198,12 @@ int main(int argc, char* argv[]){
 	int cpt=0;
 	
   while(EOF!=(k=fgetc(x))){
-	  printf("\n__%c__\n",k);
   i=0;
     while(k!=tabNoeud[i].symbole){//cherche l'indice du tabNoeud correspondant au caractère lu
      i+=1;
    }
     rest=reste(tabCodes);
     lcode=taille_c(tabNoeud[i].code);
-    printf("rest=%d   lcode=%d\n",rest,lcode);
     m=0;
     if(lcode <= rest){//si y'à assez d'espace dans tabCodes il y fou le tabNoeud[i].code correspondant et passe au char suivant
     int j=0;
@@ -220,15 +218,15 @@ int main(int argc, char* argv[]){
 			tabCodes[8-rest]=tabNoeud[i].code[m];
 			m+=1;
 			rest-=1;
-			printf("JE SUIS ICI : rest=%d   m=%d\n",rest,m);
 			}
-		for(cpt=0;cpt<8;cpt++){
-		printf("|%c",tabCodes[cpt]);
-		}
-		printf("\nICI\n");
-       int pp=0;
-       pp=convert_b_d(tabCodes);
-       fwrite(&pp,sizeof(pp),1,y);
+       //int pp=0;
+       //pp=convert_b_d(tabCodes);
+             for(cpt=0;cpt<8;cpt++){
+				printf("|%c",tabCodes[cpt]);
+				}
+				printf("\n");
+       printf("tabCodes lu comme un int : %d\n  comme un char : %c\n",tabCodes,tabCodes);
+       fwrite(&tabCodes,sizeof(unsigned char),1,y);
        taillefin+=1;
        init(tabCodes);
        rest=reste(tabCodes);
@@ -236,17 +234,12 @@ int main(int argc, char* argv[]){
 			tabCodes[8-rest]=tabNoeud[i].code[m];
 			m+=1;
 			rest-=1;
-			printf("JE SUIS LA : rest=%d   m=%d\n",rest,m);
 			} 
       }
-      for(cpt=0;cpt<8;cpt++){
-		printf("|%c",tabCodes[cpt]);
-		}
-		printf("\nLA\n");
  }
  
  /*Vidage du buffer tabCodes s'il y à des restes*/
-  if (k==EOF && rest!=8){
+  if (k==EOF){
   unsigned int *temp=malloc(sizeof(unsigned int)*8);
   for(i=0;i<rest;i++){
   	temp[i]='0';
@@ -257,19 +250,20 @@ int main(int argc, char* argv[]){
      i+=1;
      rest+=1;
   }
+  		printf("\n--Dernier Coup--\n");
       for(cpt=0;cpt<8;cpt++){
 		printf("|%c",temp[cpt]);
 		}
-		printf("\n<---\n");
-  int der=0;
-  der=convert_b_d(temp);
-  fwrite(&der,sizeof(int),1,y);
+		printf("\n----\n");
+  //int der=0;
+  //der=convert_b_d(temp);
+  printf("temp lu en entier=%d\nlu en char : %c\n",temp,temp);
+  fwrite(&temp,sizeof(unsigned char),1,y);
   free(temp);
  }
   free(tabCodes);
   fclose(x);
   fclose(y);
-
   /*Calcul longeur moyenne de codage*/
   float lm=0;
   int p=0;
