@@ -63,7 +63,7 @@ int reste(unsigned int *tab){
   int reste=0;  
   int i;
   for(i=0;i<8;i++){
-    if(tab[i]==2){
+    if(tab[i]=='2'){
       reste+=1;
     }
   }
@@ -73,7 +73,7 @@ int reste(unsigned int *tab){
 void init(unsigned int *tab){
   int i;
   for(i=0;i<8;i++){
-    tab[i]=2;
+    tab[i]='2';
       }
  }
 
