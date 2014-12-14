@@ -39,11 +39,9 @@ int deuxp(int a){
     result=2*result;}
   return result;}
 */
-unsigned char* convert_d_b(int a)
-{
+unsigned char* convert_d_b(int a){
     int i=0;
     unsigned char* octet = malloc(8);
- 
     for(i=0; i<8; i++){
         octet[i] = (a & 1) + '0';
         a >>= 1;
