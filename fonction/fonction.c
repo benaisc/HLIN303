@@ -16,28 +16,24 @@ int convert_b_d(char * p){
   }
   return result;
 }
-/*
-unsigned int* convert_d_b(int a){
+
+char* convert_d_b(char a){
   int i;
-  unsigned int *result=malloc(8*sizeof(unsigned int));
-  for(i=7;i>-1;i--){
-      if((a-deuxp(i))>=0){
-	  result[i]=1;
-	  a=a-deuxp(i);}
+  char *result=malloc(8*sizeof(char));
+  int b=(int)a;
+  if(b<0){
+    b=b+256;
+  }
+  printf("\n b=%d \n",b);
+  for(i=0;i<8;i++){
+      if((b-deuxp(7-i))>=0){
+	  result[i]='1';
+	  b=b-deuxp(7-i);}
       else{
-	  result[i]=0;}}
+	  result[i]='0';}}
   return result;}
 
-*/
-char* convert_d_b(int a){
-    int i=0;
-    char* octet = malloc(8);
-    for(i=0; i<8; i++){
-        octet[i] = (a & 1) + '0';
-        a >>= 1;
-    }
-    return octet;
-}
+
 int deuxp(int a){
   int result=1;
 	while(a>0){
