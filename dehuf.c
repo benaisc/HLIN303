@@ -54,7 +54,7 @@ return 3;
 
        Arbre=realloc(Arbre,nbnoeud*sizeof(NoeudSC));
        if(Arbre==NULL) {
-	 printf("PUTAIN DE MERDE");
+	 printf("JE SUIS ICI\n");
        }
        Arbre[nbnoeud-1].symbole=car;
        i-=1;
@@ -67,7 +67,7 @@ return 3;
        Arbre[nbnoeud-1].code[i]='\0';
 
        if(Arbre[nbnoeud-1].code==NULL) {
-	 printf("LA BITCH");
+	 printf("JE SUIS LA\n");
        }
      }
      else{
