@@ -1,5 +1,4 @@
 //HLIN303:Huffman
-
 #include "./arbre/arbre.h"
 #include "./fonction/fonction.h"
 #include <stdio.h>
@@ -29,6 +28,7 @@ int main(int argc, char* argv[]){
   int nbfeuille=0;
   int i=0;
   float tailledep=0;
+  float taillefin=0;
   
   /*Initialisation des occurences a 0*/
   for(i=0;i<256;i++){
@@ -187,15 +187,14 @@ int main(int argc, char* argv[]){
   */
   /*Remplissage d'un fichier compressé*/
   FILE *x=fopen(argv[1],"r");
-  FILE *y=fopen("fichierhuf.txt","a");
+  FILE *y=fopen("fichierhuf.txt","w");
   int k=0;
   int rest=0;
   int lcode=0;
   int m=0;
-  unsigned int *tabCodes=malloc(sizeof(unsigned int)*8);
-  float taillefin=0;
+  char *tabCodes=malloc(sizeof(char)*8);
   init(tabCodes);
-	int cpt=0;
+  //int cpt=0;
 	
   while(EOF!=(k=fgetc(x))){
   i=0;
@@ -219,15 +218,17 @@ int main(int argc, char* argv[]){
 			m+=1;
 			rest-=1;
 			}
-       //int pp=0;
-       //pp=convert_b_d(tabCodes);
-             for(cpt=0;cpt<8;cpt++){
-				printf("|%c",tabCodes[cpt]);
-				}
-				printf("\n");
-       printf("tabCodes lu comme un int : %d\n  comme un char : %c\n",*tabCodes,*tabCodes);
-       fwrite(tabCodes,sizeof(unsigned int),8,y);
-       taillefin+=1;
+       int pp=0;
+       pp=convert_b_d(tabCodes);
+       printf("Entier pp=%d\n",pp);
+       printf("Charr pp=%c\n",pp);
+       char ppconv=pp;
+       printf("ppconvchar=%c\n",ppconv);
+       printf("__%s__\n",tabCodes);
+       printf("comme un char : %c\n",*tabCodes);
+       
+       fwrite(&ppconv,sizeof(char),1,y);
+       taillefin+=8;
        init(tabCodes);
        rest=reste(tabCodes);
 		while(m<lcode){
@@ -240,25 +241,33 @@ int main(int argc, char* argv[]){
  
  /*Vidage du buffer tabCodes s'il y à des restes*/
   if (k==EOF){
-  unsigned int *temp=malloc(sizeof(unsigned int)*8);
-  for(i=0;i<rest;i++){
-  	temp[i]='0';
+  char *temp=malloc(sizeof(char)*8);
+  for(i=0;i<8;i++){
+    if(tabCodes[i] != '2'){
+      temp[i]=tabCodes[i];
+    }
+    else{
+      temp[i]='0';
+    }
   }
-  i=0;
-    while(tabCodes[i] != '2'){
-     temp[rest]=tabCodes[i];
-     i+=1;
-     rest+=1;
-  }
+
+  //i=0;
+  //while(tabCodes[i] != '2'){
+  // temp[rest]=tabCodes[i];
+  // i+=1;
+  // rest+=1;
+  //}
   		printf("\n--Dernier Coup--\n");
-      for(cpt=0;cpt<8;cpt++){
-		printf("|%c",temp[cpt]);
-		}
+		printf("__%s__",temp);
 		printf("\n----\n");
-  //int der=0;
-  //der=convert_b_d(temp);
-  printf("temp lu en entier=%d\nlu en char : %c\n",*temp,*temp);
-  fwrite(temp,sizeof(unsigned int),8,y);
+		int der=0;
+		der=convert_b_d(temp);
+		char derconv=der;
+		printf("Entier pp=%d\n",der);
+		printf("Charr pp=%c\n",derconv);
+		printf("lu en char : %c\n",*temp);
+  fwrite(&derconv,sizeof(char),1,y);
+  taillefin+=8;
   free(temp);
  }
   free(tabCodes);
