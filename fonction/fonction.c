@@ -7,11 +7,11 @@ int taille_c(char * p){//Il recoit un char car tabNoeud[i].code est passé comme
     }
   return j;
 }
-int convert_b_d(unsigned int * p){
+int convert_b_d(char * p){
   int i,result=0; 
   for(i=0;i<8;i++){
-    if(p[i]==1){
-      result=result+deuxp(i);
+    if(p[i]=='1'){
+      result=result+deuxp(7-i);
     }
   }
   return result;
@@ -27,21 +27,11 @@ unsigned int* convert_d_b(int a){
       else{
 	  result[i]=0;}}
   return result;}
-  
-int deuxp(int a){
-  int i;
-  int result=1;
-  if(a==0){
-      return 1;}
-  if(a==1){
-      return 2;}
-  for(i=0;i<a;i++){
-    result=2*result;}
-  return result;}
+
 */
-unsigned char* convert_d_b(int a){
+char* convert_d_b(int a){
     int i=0;
-    unsigned char* octet = malloc(8);
+    char* octet = malloc(8);
     for(i=0; i<8; i++){
         octet[i] = (a & 1) + '0';
         a >>= 1;
@@ -62,7 +52,7 @@ void plus_une_case(char * a){
   a[t]='0';
   }
 
-int reste(unsigned int *tab){
+int reste(char* tab){
   int reste=0;  
   int i;
   for(i=0;i<8;i++){
@@ -73,11 +63,9 @@ int reste(unsigned int *tab){
  return reste;
   }
 
-void init(unsigned int *tab){
+void init(char *tab){
   int i;
   for(i=0;i<8;i++){
     tab[i]='2';
       }
  }
-
-   
