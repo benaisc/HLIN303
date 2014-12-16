@@ -1,15 +1,15 @@
 Vous trouvez ici le code source du Compresseur de Huffman de Charles et Victor,
 
 huf.c est notre code à jour qu'il faut compiler avec arbre.c et fonction.c :
-$gcc huf.c arbre/arbre.c fonction/fonction.c -o huf
+	$gcc huf.c arbre/arbre.c fonction/fonction.c -o huf
 
 dehuf.c ne remplit pour l'instant qu'un tableau avec l'en-tête : 
-$gcc dehuf.c arbre/arbre.c fonction/fonction.c -o dehuf
+	$gcc dehuf.c arbre/arbre.c fonction/fonction.c -o dehuf
 
-parcoursRepertoire.py execute huf mais huf ne reconnait pas son argv[1].
+compresseRepertoire.py execute huf sur chaque fichiers mais huf ne reconnait pas l'argv[1] passé par os.system.
 
 Executer avec un fichier texte quelconque (/ok contient des fichiers tests) syntaxe :
-$python parcoursRepertoire.py REP
+$python compresseRepertoire.py REP
 $./huf nom_fichier nom_fichier_compresser
 $./dehuf nom_fichier_compresser nom_fichier_decompresser
 
