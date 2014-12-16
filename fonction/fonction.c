@@ -44,7 +44,7 @@ int deuxp(int a){
 }
 void plus_une_case(char * a){
   int t=taille_c(a);
- a=realloc(a, sizeof(char)*(t+1));
+  a=realloc(a, sizeof(char)*(t+1));
   a[t]='0';
   }
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import os, re, sys
-import ctypes
+import os, sys
+import os
 
 Fichiers={"":0}
 
@@ -12,8 +12,7 @@ def parcours(rep):
         if os.path.isdir(rep+"/"+fichier):
             parcours(rep+'/'+fichier)
         else:
-            
-
+            os.system('huf'+' '+'fichier')
 
 parcours(sys.argv[1])
 total=0

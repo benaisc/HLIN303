@@ -1,6 +1,5 @@
 #include"arbre.h"
 ArbreBin creerArbreBin(int e, ArbreBin G, ArbreBin D){
-  /* Res : renvoie une ArbreBin dont la racine vaut e, le sag G et le sad D   */
   NoeudSC b;
   ArbreBin A=&b;
   A->val=e;  A->fg=G;  A->fd=D;
@@ -25,14 +24,14 @@ void code(ArbreBin A){
 	    {
 	      while(A->code[i]!='\0')
 		{
-		  i++;
+		  i+=1;
 		}
 	      A->fd->code=realloc(A->fd->code, sizeof(char)*(i+1));
 	      i=0;
 	      while(A->code[i]!='\0')
 		{
 		  A->fd->code[i]=A->code[i];
-		  i++;
+		  i+=1;
 		}
 	      A->fd->code[i]='1';
 	    
@@ -43,14 +42,14 @@ void code(ArbreBin A){
 	    {
 	      while(A->code[i]!='\0')
 		{
-		  i++;
+		  i+=1;
 		}
 	      A->fg->code=realloc(A->fg->code, sizeof(char)*(i+1));
 	      i=0;
 	      while(A->code[i]!='\0')
 		{
 		  A->fg->code[i]=A->code[i];
-		  i++;
+		  i+=1;
 		}
 	      A->fg->code[i]='0';
 	      

@@ -1,11 +1,10 @@
-//HLIN303:Huffman
 #include "./arbre/arbre.h"
 #include "./fonction/fonction.h"
 #include <stdio.h>
 
 int main(int argc, char* argv[]){
   /*Test d'ouverture*/
-  if (argc!=2){
+  if (argc!=3){
     printf("Syntax Error.\n");
     return 1;
   }
@@ -75,7 +74,7 @@ int main(int argc, char* argv[]){
     }
   }
 
-  printf("nbfeuille=%d\nindice=%d\n",nbfeuille,indice);
+ printf("nbfeuille=%d\nindice=%d\n",nbfeuille,indice);
 
   printf("\n***_Creation Arbre_***\n");
   int imini=-1, imini2=-1, nn=2*nbfeuille-1;
@@ -113,7 +112,7 @@ int main(int argc, char* argv[]){
     imini=-1;
     imini2=-1;
   }
-  /*
+  
   printf("Affichage tableaux\n");
   for(i=0;i<2*nbfeuille-1;i++){
     if(i<nbfeuille){
@@ -123,7 +122,7 @@ int main(int argc, char* argv[]){
       printf("Ind:%d   /   Val:%d fg:%d fd:%d parent:%d\n",i,val[i],fg[i],fd[i],parent[i]);
     }
   }
-  */
+  
   printf("***_Remplissage Arbre_***\n");
   for(i=0;i<2*nbfeuille-1;i++){
       tabNoeud[i].val=val[i];
@@ -146,140 +145,120 @@ int main(int argc, char* argv[]){
       tabNoeud[i].fg=&tabNoeud[fg[i]];
     }
   for(i=0;i<2*nbfeuille-1;i++){
-      tabNoeud[i].code=NULL;
-    }
+    tabNoeud[i].code=NULL;
+  }
    
   printf("***_Remplissage codes_***\n");
   if(2*nbfeuille-2==0){
-      tabNoeud[0].code="0";
-      printf("symbole : %c nombre d'occurence : %d code:%s \n",tabNoeud[0].symbole,tabNoeud[0].val,tabNoeud[0].code);
-    }
+    tabNoeud[0].code="0";
+    printf("symbole : %c nombre d'occurence : %d code:%s \n",tabNoeud[0].symbole,tabNoeud[0].val,tabNoeud[0].code);
+  }
   else{
-      ArbreBin A=&(tabNoeud[2*nbfeuille-2]);
-      //printf("val:%d code:%s  fgval:%d fdval:%d \n",A->val,A->code,A->fg->val,A->fd->val);
-      code(A);
-      for(i=0;i<nbfeuille;i++){
-	  printf("symbole : %c nombre d'occurence : %d code:%s \n",tabNoeud[i].symbole,tabNoeud[i].val,tabNoeud[i].code);
-	}
+    ArbreBin A=&(tabNoeud[2*nbfeuille-2]);
+    //printf("val:%d code:%s  fgval:%d fdval:%d \n",A->val,A->code,A->fg->val,A->fd->val);
+    code(A);
+    for(i=0;i<nbfeuille;i++){
+      printf("tabNoeud[%d]symbole : %c nombre d'occurence : %d code:%s \n",i,tabNoeud[i].symbole,tabNoeud[i].val,tabNoeud[i].code);
     }
+  }
 
-  /*__ANCIENNE METHODE NE COMPRESSANT PAS
-    printf("_Crée un nouveau fichier texte en fonction du code associé à chaque lettre_\n");
-    FILE *g=fopen(argv[1],"r");
-    FILE *h=fopen("file.bin","wb");
-    int lu=0;
-    i=0;
-    int j=0;
-    float taillefin=0;
-    while(EOF!=(lu=fgetc(g))){
-    while(lu!=tabNoeud[i].symbole){
-    i++;
-    }
-    while(tabNoeud[i].code[j]!='\0'){
-    j++;
-    }
-    fwrite(tabNoeud[i].code,j,1,h);
-    taillefin+=1;
-    j=0;
-    }
-    fclose(g);
-    fclose(h);
-  */
+  /*AJOUT EN ENTETE DES DONNEES DE DECODAGE*/
+  FILE* fic=NULL;
+  fic=fopen(argv[2],"w");
+  int Lcode;
+  char Tcar;
+  char LcodeChar;
+  for(i=0;i<nbfeuille;i++){
+    Lcode=taille_c(tabNoeud[i].code);
+    LcodeChar='0'+Lcode;
+    Tcar=tabNoeud[i].symbole;
+    fwrite(&Tcar,sizeof(char),1,fic);
+    fwrite(&LcodeChar,sizeof(char),1,fic);
+    fwrite(tabNoeud[i].code,Lcode*sizeof(char),1,fic);
+  }
+  fwrite("&",sizeof(char),1,fic);
+  fwrite("&",sizeof(char),1,fic);
+  fclose(fic);
+
+
   /*Remplissage d'un fichier compressé*/
+
   FILE *x=fopen(argv[1],"r");
-  FILE *y=fopen("fichierhuf.txt","w");
-  int k=0;
+  FILE *y=fopen(argv[2],"a");
+  char k=0;
   int rest=0;
   int lcode=0;
   int m=0;
   char *tabCodes=malloc(sizeof(char)*8);
   init(tabCodes);
-  //int cpt=0;
 	
   while(EOF!=(k=fgetc(x))){
-  i=0;
+    i=0;
     while(k!=tabNoeud[i].symbole){//cherche l'indice du tabNoeud correspondant au caractère lu
-     i+=1;
-   }
+      i+=1;
+    }
     rest=reste(tabCodes);
     lcode=taille_c(tabNoeud[i].code);
     m=0;
     if(lcode <= rest){//si y'à assez d'espace dans tabCodes il y fou le tabNoeud[i].code correspondant et passe au char suivant
-    int j=0;
-     for(j=0;j<lcode;j++){
+      int j=0;
+      for(j=0;j<lcode;j++){
         tabCodes[8-rest]=tabNoeud[i].code[m];
         m+=1;
         rest-=1;
-		}
-    }
-   else{//s'il n'y à pas assez de place
-        while(rest!=0){//et tant qu'il y a de la place, tu rempli
-			tabCodes[8-rest]=tabNoeud[i].code[m];
-			m+=1;
-			rest-=1;
-			}
-       int pp=0;
-       pp=convert_b_d(tabCodes);
-       printf("Entier pp=%d\n",pp);
-       printf("Charr pp=%c\n",pp);
-       char ppconv=pp;
-       printf("ppconvchar=%c\n",ppconv);
-       printf("__%s__\n",tabCodes);
-       printf("comme un char : %c\n",*tabCodes);
-       
-       fwrite(&ppconv,sizeof(char),1,y);
-       taillefin+=8;
-       init(tabCodes);
-       rest=reste(tabCodes);
-		while(m<lcode){
-			tabCodes[8-rest]=tabNoeud[i].code[m];
-			m+=1;
-			rest-=1;
-			} 
       }
- }
- 
- /*Vidage du buffer tabCodes s'il y à des restes*/
-  if (k==EOF){
-  char *temp=malloc(sizeof(char)*8);
-  for(i=0;i<8;i++){
-    if(tabCodes[i] != '2'){
-      temp[i]=tabCodes[i];
     }
-    else{
-      temp[i]='0';
+    else{//s'il n'y à pas assez de place
+      while(rest!=0){//et tant qu'il y a de la place, tu rempli
+	tabCodes[8-rest]=tabNoeud[i].code[m];
+	m+=1;
+	rest-=1;
+      }
+      int pp=0;
+      pp=convert_b_d(tabCodes);
+      char ppconv=pp; 
+      fwrite(&ppconv,sizeof(char),1,y);
+      taillefin+=8;
+      init(tabCodes);
+      rest=reste(tabCodes);
+      while(m<lcode){
+	tabCodes[8-rest]=tabNoeud[i].code[m];
+	m+=1;
+	rest-=1;
+      } 
     }
   }
 
-  //i=0;
-  //while(tabCodes[i] != '2'){
-  // temp[rest]=tabCodes[i];
-  // i+=1;
-  // rest+=1;
-  //}
-  		printf("\n--Dernier Coup--\n");
-		printf("__%s__",temp);
-		printf("\n----\n");
-		int der=0;
-		der=convert_b_d(temp);
-		char derconv=der;
-		printf("Entier pp=%d\n",der);
-		printf("Charr pp=%c\n",derconv);
-		printf("lu en char : %c\n",*temp);
-  fwrite(&derconv,sizeof(char),1,y);
-  taillefin+=8;
-  free(temp);
- }
+  /*Vidage du buffer tabCodes s'il y à des restes*/
+  if (k==EOF){
+    char *temp=malloc(sizeof(char)*8);
+    for(i=0;i<8;i++){
+      if(tabCodes[i] != '2'){
+	temp[i]=tabCodes[i];
+      }
+      else{
+	temp[i]='0';
+      }
+    }
+    int der=0;
+    der=convert_b_d(temp);
+    char derconv=der;
+    fwrite(&derconv,sizeof(char),1,y);
+    taillefin+=8;
+    free(temp);
+  }
   free(tabCodes);
   fclose(x);
   fclose(y);
+
+
   /*Calcul longeur moyenne de codage*/
   float lm=0;
   int p=0;
   i=0;
   for(i=0;i<nbfeuille;i++){
     while(tabNoeud[i].code[p]!='\0'){
-  p+=1;
+      p+=1;
     }
     lm+=p*tabNoeud[i].val;
     p=0;
@@ -287,6 +266,7 @@ int main(int argc, char* argv[]){
   lm=lm/(tailledep/8);
   printf("Longeur moyenne de codage=%.2f bits\n",lm);
   printf("Taille originelle : %d bits soit %d octets\nTaille compressée: %d bits soit %d octets\nGain=%.2f\%\n",(int)tailledep,(int)tailledep/8,(int)taillefin,(int)taillefin/8,((tailledep-taillefin)/tailledep)*100);
+
 
   return 0;
 }
