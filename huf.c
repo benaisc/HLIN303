@@ -1,6 +1,5 @@
 #include "./arbre/arbre.h"
 #include "./fonction/fonction.h"
-#include <stdio.h>
 
 int main(int argc, char* argv[]){
   /*Test d'ouverture*/
@@ -23,12 +22,12 @@ int main(int argc, char* argv[]){
     return 3;
   }
 
-  int occ[256];
-  int nbfeuille=0;
   int i=0;
   float tailledep=0;
   float taillefin=0;
-  
+  int occ[256];
+  int nbfeuille=0;
+
   /*Initialisation des occurences a 0*/
   for(i=0;i<256;i++){
     occ[i]=0;
@@ -155,19 +154,30 @@ int main(int argc, char* argv[]){
   }
   else{
     ArbreBin A=&(tabNoeud[2*nbfeuille-2]);
-    //printf("val:%d code:%s  fgval:%d fdval:%d \n",A->val,A->code,A->fg->val,A->fd->val);
     code(A);
     for(i=0;i<nbfeuille;i++){
       printf("tabNoeud[%d]symbole : %c nombre d'occurence : %d code:%s \n",i,tabNoeud[i].symbole,tabNoeud[i].val,tabNoeud[i].code);
     }
   }
-
+/*
+  int feuil=0;
+  int nbBits=0;
+  nn=0;
+  //Compte nombre de "bits" à lire
+  for(i=0;i<nbfeuille;i++){
+    while(tabNoeud[i].code[nn] != '\0'){
+      nbBits+=1;
+      nn+=1;
+    }
+  }
+*/
   /*AJOUT EN ENTETE DES DONNEES DE DECODAGE*/
   FILE* fic=NULL;
   fic=fopen(argv[2],"w");
   int Lcode;
   char Tcar;
   char LcodeChar;
+  //fwrite(&nbBits,sizeof(char),1,fic);
   for(i=0;i<nbfeuille;i++){
     Lcode=taille_c(tabNoeud[i].code);
     LcodeChar='0'+Lcode;
@@ -182,7 +192,6 @@ int main(int argc, char* argv[]){
 
 
   /*Remplissage d'un fichier compressé*/
-
   FILE *x=fopen(argv[1],"r");
   FILE *y=fopen(argv[2],"a");
   char k=0;
@@ -222,9 +231,9 @@ int main(int argc, char* argv[]){
       init(tabCodes);
       rest=reste(tabCodes);
       while(m<lcode){
-	tabCodes[8-rest]=tabNoeud[i].code[m];
-	m+=1;
-	rest-=1;
+	     tabCodes[8-rest]=tabNoeud[i].code[m];
+	     m+=1;
+	     rest-=1;
       } 
     }
   }
@@ -234,10 +243,10 @@ int main(int argc, char* argv[]){
     char *temp=malloc(sizeof(char)*8);
     for(i=0;i<8;i++){
       if(tabCodes[i] != '2'){
-	temp[i]=tabCodes[i];
+	     temp[i]=tabCodes[i];
       }
       else{
-	temp[i]='0';
+	     temp[i]='0';
       }
     }
     int der=0;
@@ -266,7 +275,6 @@ int main(int argc, char* argv[]){
   lm=lm/(tailledep/8);
   printf("Longeur moyenne de codage=%.2f bits\n",lm);
   printf("Taille originelle : %d bits soit %d octets\nTaille compressée: %d bits soit %d octets\nGain=%.2f\%\n",(int)tailledep,(int)tailledep/8,(int)taillefin,(int)taillefin/8,((tailledep-taillefin)/tailledep)*100);
-
 
   return 0;
 }
