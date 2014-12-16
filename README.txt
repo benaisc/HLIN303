@@ -1,34 +1,39 @@
-Vous trouvez ici le code source d'un Compresseur de Huffman.
+Vous trouvez ici le code source du Compresseur de Huffman de Charles et Victor,
 
-le fichier huf.c est notre code à jour
+huf.c est notre code à jour qu'il faut compiler avec arbre.c et fonction.c :
+$gcc huf.c arbre/arbre.c fonction/fonction.c -o huf
 
-dans Archive vous trouverez la dernière version fonctionnelle de huf.c qu'il faut compiler avec arbre.c et fonction.c de leurs dossiers respectifs
+dehuf.c ne remplit pour l'instant qu'un tableau avec l'en-tête : 
+$gcc dehuf.c arbre/arbre.c fonction/fonction.c -o dehuf
 
-et l'executer avec un fichier texte quelconque (ok fichiers textes fonctionnels, pas encore..)
+parcoursRepertoire.py execute huf mais huf ne reconnait pas son argv[1].
 
-La partie decompresseur n'est pas encore codée.. une formalitée me diriez vous ?
+Executer avec un fichier texte quelconque (/ok contient des fichiers tests) syntaxe :
+$python parcoursRepertoire.py REP
+$./huf nom_fichier nom_fichier_compresser
+$./dehuf nom_fichier_compresser nom_fichier_decompresser
 
 
 Algorithme suivi : 
-Etape 0 :
+Etape 0 : COMPRESSEUR
 	Lire char par char le fichier
-	Compter le nombre d'occurences des char d'un fichier texte
+		Compter le nombre d'occurences des char
 	Construire un arbre
-	Associer à chaque occurrences un code binaire en fonction de l'arbre
-
-Etape 1 :
+		Associer à chaque occurrences un code binaire en fonction de l'arbre
+	Remplir l'en-tête de fichierhuf des codes associés aux char
 	Lire char par char le fichier
-	Pour chaque char :
-		Concaténer le code associé au char à un tableau de 8bits
-	Pour chaque tableau :
-		Remplir un fichier2 avec la conversion en un entier des 8bits
+		Pour chaque char :
+			Concaténer le code associé au char à un tableau de 8bits
+		Pour chaque tableau :
+			Remplir fichierhuf avec la conversion en un char des 8bits
 
-Etape 2 :
-	Lire entier par entier le fichier2
-	Convertir l'entier en son code binaire
-	Remplir un fichier3 des codes binaires concaténés
-	Lire bit à bit le fichier
-		Avancer dans l'arbre en conséquence
-			Arrivé à une feuille
-				Ecrire dans un fichier4 la valeur de la feuille
-				Repartir de la racine
+Etape 2 : DECOMPRESSEUR
+	Lire l'en-tete et remplir en conséquence un tableau avec le le char et son code
+	Lire char par char le fichierhuf
+		Convertir le char en son code binaire
+			Lire 'bit à bit' le code
+				Regarder dans les codes
+					Arrivé à une feuille
+					Ecrire dans un fichier4 la valeur de la feuille
+
+Etape 3 : Script python qui compresse chaque fichiers d'un repertoire
