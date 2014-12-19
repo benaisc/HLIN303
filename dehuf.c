@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[]){
 
-/*TESTS INTEGRITE*/
+//TESTS INTEGRITE
 if (argc!=3){
 printf("Syntax Error.\n");
 return 1;
@@ -22,7 +22,7 @@ return 3;
 }
 fclose(fic);
 
-//Decodage de l'entete
+//***_Decodage de l'entete_***
 	FILE *x=fopen(argv[1],"r");//argv[1] = fichierhuf.txt
 	unsigned char car;
 	car=fgetc(x);
@@ -37,13 +37,13 @@ fclose(fic);
 	unsigned char* CODE_BIN_SUP=malloc(nbBitsLire*sizeof(char)+1);
 
 	if(nbBitsLire<=8){
-	    int i=0;
+	 	int i=0;
 		for(i=0;i<nbBitsLire;i++){
 			CODE_BIN_SUP[i]=CODE_BIN[i];
 		}
 	CODE_BIN_SUP[i+1]='\0';
- //printf("CODE_BIN_SUP=%s\n",CODE_BIN_SUP);
 	car=fgetc(x);//car=&
+	//printf("CODE_BIN_SUP=%s\n",CODE_BIN_SUP);
 	}
 	else{
 		int i=0;
@@ -70,7 +70,7 @@ fclose(fic);
 	printf("nbBits d'encodage=%d\n",nbBitsTotal);
 	free(CODE_BIN_SUP);
 
-//Remplissage d'une structure de décodage avec
+//***_Remplissage d'une structure de décodage_***
 	NoeudSC *Arbre=NULL;
 	int nbnoeud=0;
 	int ind=0;

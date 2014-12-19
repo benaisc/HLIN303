@@ -123,10 +123,10 @@ printf("CHECK l'Arbre\n");
   tabNoeud[2*nbfeuille-2].fd=&tabNoeud[fd[2*nbfeuille-2]];
   tabNoeud[2*nbfeuille-2].fg=&tabNoeud[fg[2*nbfeuille-2]];
   for(i=0;i<2*nbfeuille-2;i++){//Les feuilles et les noeuds
-    tabNoeud[i].val=val[i];
-	tabNoeud[i].parent=&tabNoeud[parent[i]];
-	tabNoeud[i].code=malloc(sizeof(char));
-	tabNoeud[i].code[0]='\0';
+     tabNoeud[i].val=val[i];
+	   tabNoeud[i].parent=&tabNoeud[parent[i]];
+	   tabNoeud[i].code=malloc(sizeof(char));
+     tabNoeud[i].code[0]='\0';
 	}
   for(i=0;i<nbfeuille;i++){//Les feuilles ont un car et pas de fils
       tabNoeud[i].symbole=car[i];
@@ -148,11 +148,13 @@ printf("CHECK l'Arbre\n");
     ArbreBin Arbre=&(tabNoeud[2*nbfeuille-2]);
     code(Arbre);
 }
-/*AFFICHAGE ARBRE
+/*
+AFFICHAGE ARBRE
     for(i=0;i<nbfeuille;i++){
       printf("tabNoeud[%d]symbole : %c nombre d'occurence : %d code:%s \n",i,tabNoeud[i].symbole,tabNoeud[i].val,tabNoeud[i].code);
     }
 */
+
 //***_Creation de l'entete du fichier compresser_***
 //Compte nombre de "bits" à lire
 	unsigned int cptBits=0;
@@ -168,8 +170,6 @@ printf("CHECK l'Arbre\n");
     nbBits+=cptBits;
   }
 
-//EN ENTETE DES DONNEES DE DECODAGE
-	// du code a lire jusqu'a &&
 	float taillefin=0;
 	unsigned char *CODE_BIN;
 	CODE_BIN=int_to_bin(nbBits);
@@ -225,10 +225,10 @@ printf("CHECK l'Arbre\n");
       rest=8;
     }
   }
-
 	fwrite("&",sizeof(char),1,fic);
 	free(tabCode);
 	taillefin+=16;
+
 	unsigned int Lcode;
 	char Tcar;
 	char LcodeChar;
@@ -246,8 +246,7 @@ printf("CHECK l'Arbre\n");
 	taillefin+=16;
 	fclose(fic);
 
-//Remplissage d'un fichier compressé
-
+//***_Remplissage d'un fichier compressé_***
 	FILE *x=fopen(argv[1],"r");
 	FILE *y=fopen(argv[2],"a");
 	char k=0;
@@ -287,22 +286,22 @@ printf("CHECK l'Arbre\n");
     }
     else{
       while(rest!=0){
-		tabCodes[8-rest]=tabNoeud[i].code[nn];
-		nn+=1;
-		rest-=1;
+		    tabCodes[8-rest]=tabNoeud[i].code[nn];
+		    nn+=1;
+		    rest-=1;
       }
-	tabCodes[8]='\0';
-    pp=bin_to_dec(tabCodes);
-    ppconv=pp; 
-    fwrite(&ppconv,sizeof(char),1,y);
-    taillefin+=8;
-    init_octet(tabCodes);
-    rest=reste(tabCodes);
-	while((nn<lcode) && (rest>0)){
-		tabCodes[8-rest]=tabNoeud[i].code[nn];
-		nn+=1;
-		rest-=1;
-	}
+	    tabCodes[8]='\0';
+      pp=bin_to_dec(tabCodes);
+      ppconv=pp; 
+      fwrite(&ppconv,sizeof(char),1,y);
+      taillefin+=8;
+      init_octet(tabCodes);
+      rest=reste(tabCodes);
+      while((nn<lcode) && (rest>0)){
+		    tabCodes[8-rest]=tabNoeud[i].code[nn];
+		    nn+=1;
+		    rest-=1;
+      }
     }
   }
 
@@ -331,7 +330,7 @@ printf("CHECK l'Arbre\n");
 
 
 //Calcul longeur moyenne de codage
-taillefin-=1;
+  taillefin-=1;
   float lm=0;
   int p=0;
   i=0;
