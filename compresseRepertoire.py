@@ -13,4 +13,4 @@ if len(sys.argv)==2:
 				os.system('./huf'+' '+fichier+' '+fichier+'huf')
 	parcours(sys.argv[1])
 else:
-	print "Syntax: $parcoursRepertoire.py /REP"
+	print "Syntax: $compresseRepertoire.py /REP"
