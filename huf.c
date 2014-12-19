@@ -2,59 +2,56 @@
 #include "./fonction/fonction.h"
 
 int main(int argc, char* argv[]){
-  /*Test d'ouverture*/
-  if (argc!=3){
+//Test d'ouverture
+	if(argc!=3){
     printf("Syntax Error.\n");
     return 1;
   }
 
-  /*Test du fichier*/
-  FILE *f=fopen(argv[1],"r");
-  if(!f){
-    printf("Fichier non trouvé.\n");
-    fclose(f);
-    return 2;
-  }
-  int c=fgetc(f);
-  if(c==EOF){
-    printf("Fichier vide.\n");
-    fclose(f);
-    return 3;
-  }
+//Test du fichier
+	FILE *f=fopen(argv[1],"r");
+	if(!f){
+		printf("%s non reconnu.\n",argv[1]);
+		fclose(f);
+		return 2;
+	}
+	int c=fgetc(f);
+	if(c==EOF){
+		printf("%s est vide.\n",argv[1]);
+		fclose(f);
+		return 3;
+	}
+	fclose(f);
+//Initialisation des occurences a 0
+	int occ[256];
+	unsigned int i=0;
+	for(i=0;i<256;i++){
+		occ[i]=0;
+	}
 
-  int i=0;
-  float tailledep=0;
-  float taillefin=0;
-  int occ[256];
-  int nbfeuille=0;
+//Creation du tableau de caractères et de leur fréquence
+	float tailledep=0;
+	f=fopen(argv[1],"r");
+	while(EOF!=(c=fgetc(f))){
+		occ[c]+=1;
+		tailledep+=8;
+	}
+	printf("Fichier de %.2f bits, soit %.2f octets(char)\n",tailledep,(tailledep/8));
+	fclose(f);
+	int nbfeuille=0;
+	for(i=0;i<256;i++){
+		if(occ[i]!=0){
+			nbfeuille+=1;
+		}
+	}
+printf("Fichier contenant %d caracteres differents\n",nbfeuille);
 
-  /*Initialisation des occurences a 0*/
-  for(i=0;i<256;i++){
-    occ[i]=0;
-  }
-
-  /*Creation du tableau de caractères et de leur fréquence*/
-  fclose(f);
-  f=fopen(argv[1],"r");
-  while(EOF!=(c=fgetc(f))){
-    occ[c]+=1;
-    tailledep+=8;
-  }
-  fclose(f);
-  for(i=0;i<256;i++){
-    if(occ[i]!=0){
-      nbfeuille+=1;
-    }
-  }
-
-  int indice=0;
   int val[(2*nbfeuille)-1];
   int fg[(2*nbfeuille)-1]; 
   int fd[(2*nbfeuille)-1]; 
   int parent[(2*nbfeuille)-1];
   char car[nbfeuille];
-  NoeudSC tabNoeud[2*nbfeuille-1];
- 
+//Initialisation tableaux
   for(i=0;i<2*nbfeuille-1;i++){
     val[i]=-1;
     parent[i]=-1;
@@ -63,19 +60,17 @@ int main(int argc, char* argv[]){
   }
 
   printf("Indice (caractère) : occurences\n");
-
+  int indice=0;
   for(i=0;i<256;i++){
     if(occ[i]!=0){
       val[indice]=occ[i];
       car[indice]=i;
-      printf("%d (%c):%d\n",indice,i,occ[i]);
+      printf("%d (%c):%d\n",indice,car[indice],val[indice]);
       indice+=1;
     }
   }
 
- printf("nbfeuille=%d\nindice=%d\n",nbfeuille,indice);
-
-  printf("\n***_Creation Arbre_***\n");
+//***_Creation Arbre_***
   int imini=-1, imini2=-1, nn=2*nbfeuille-1;
   for(nn=nbfeuille;nn<2*nbfeuille-1;nn++){
     for(i=0;i<nn;i++){
@@ -111,136 +106,209 @@ int main(int argc, char* argv[]){
     imini=-1;
     imini2=-1;
   }
-  
-  printf("Affichage tableaux\n");
-  for(i=0;i<2*nbfeuille-1;i++){
-    if(i<nbfeuille){
-      printf("Ind:%d Car:%c Val:%d fg:%d fd:%d parent:%d\n",i,car[i],val[i],fg[i],fd[i],parent[i]);
-    }
-    else{
-      printf("Ind:%d   /   Val:%d fg:%d fd:%d parent:%d\n",i,val[i],fg[i],fd[i],parent[i]);
-    }
-  }
-  
-  printf("***_Remplissage Arbre_***\n");
-  for(i=0;i<2*nbfeuille-1;i++){
-      tabNoeud[i].val=val[i];
-      if(i!=2*nbfeuille-2){
-	  tabNoeud[i].parent=&tabNoeud[parent[i]];
+/*
+printf("CHECK l'Arbre\n");
+	for(i=0;i<2*nbfeuille-1;i++){
+		if(i<nbfeuille){
+			printf("Ind:%d Car:%c Val:%d fg:%d fd:%d parent:%d\n",i,car[i],val[i],fg[i],fd[i],parent[i]);
+		}
+		else{
+			printf("Ind:%d   /   Val:%d fg:%d fd:%d parent:%d\n",i,val[i],fg[i],fd[i],parent[i]);
+		}
 	}
-      else{
-	  tabNoeud[i].parent=NULL;
+*/
+//***_Remplissage Structure_***
+  NoeudSC tabNoeud[2*nbfeuille-1];
+  tabNoeud[2*nbfeuille-2].parent=NULL;
+  tabNoeud[2*nbfeuille-2].fd=&tabNoeud[fd[2*nbfeuille-2]];
+  tabNoeud[2*nbfeuille-2].fg=&tabNoeud[fg[2*nbfeuille-2]];
+  for(i=0;i<2*nbfeuille-2;i++){//Les feuilles et les noeuds
+    tabNoeud[i].val=val[i];
+	tabNoeud[i].parent=&tabNoeud[parent[i]];
+	tabNoeud[i].code=malloc(sizeof(char));
+	tabNoeud[i].code[0]='\0';
 	}
-    }
-  for(i=0;i<nbfeuille;i++){
+  for(i=0;i<nbfeuille;i++){//Les feuilles ont un car et pas de fils
       tabNoeud[i].symbole=car[i];
-    }
-  for(i=0;i<nbfeuille;i++){
       tabNoeud[i].fd=NULL;
       tabNoeud[i].fg=NULL;
-    }   
-  for(i=nbfeuille;i<2*nbfeuille-1;i++){
+    }
+  for(i=nbfeuille;i<2*nbfeuille-2;i++){//Les noeuds ont un fils
       tabNoeud[i].fd=&tabNoeud[fd[i]];
       tabNoeud[i].fg=&tabNoeud[fg[i]];
     }
-  for(i=0;i<2*nbfeuille-1;i++){
-    tabNoeud[i].code=NULL;
-  }
-   
-  printf("***_Remplissage codes_***\n");
-  if(2*nbfeuille-2==0){
-    tabNoeud[0].code="0";
-    printf("symbole : %c nombre d'occurence : %d code:%s \n",tabNoeud[0].symbole,tabNoeud[0].val,tabNoeud[0].code);
+//***_Remplissage codes_***
+  if (nbfeuille == 1){
+	  tabNoeud[0].val=val[0];
+	  tabNoeud[0].code=malloc(2*sizeof(char));
+	  tabNoeud[0].code[0]='0';
+	  tabNoeud[0].code[1]='\0';	  
   }
   else{
-    ArbreBin A=&(tabNoeud[2*nbfeuille-2]);
-    code(A);
+    ArbreBin Arbre=&(tabNoeud[2*nbfeuille-2]);
+    code(Arbre);
+}
+/*AFFICHAGE ARBRE
     for(i=0;i<nbfeuille;i++){
       printf("tabNoeud[%d]symbole : %c nombre d'occurence : %d code:%s \n",i,tabNoeud[i].symbole,tabNoeud[i].val,tabNoeud[i].code);
     }
-  }
-/*
-  int feuil=0;
-  int nbBits=0;
-  nn=0;
-  //Compte nombre de "bits" à lire
-  for(i=0;i<nbfeuille;i++){
+*/
+//***_Creation de l'entete du fichier compresser_***
+//Compte nombre de "bits" à lire
+	unsigned int cptBits=0;
+	unsigned int nbBits=0;
+	for(i=0;i<nbfeuille;i++){
+		nn=0;
+		cptBits=0;
     while(tabNoeud[i].code[nn] != '\0'){
-      nbBits+=1;
-      nn+=1;
+		cptBits+=1;
+		nn+=1;
+    }
+    cptBits=cptBits*tabNoeud[i].val;
+    nbBits+=cptBits;
+  }
+
+//EN ENTETE DES DONNEES DE DECODAGE
+	// du code a lire jusqu'a &&
+	float taillefin=0;
+	unsigned char *CODE_BIN;
+	CODE_BIN=int_to_bin(nbBits);
+	unsigned int lcode=0;
+	lcode=taille_c(CODE_BIN);
+	char ppconv;
+	ppconv=lcode;
+  	FILE* fic=NULL;
+	fic=fopen(argv[2],"w");
+	fwrite(&ppconv,sizeof(char),1,fic);
+	taillefin+=8;
+	
+	unsigned int rest=8;
+	unsigned int m=0;
+	unsigned char *tabCode=malloc(sizeof(char)*9);
+	init_octet(tabCode);
+	m=lcode;
+	i=0;
+	unsigned int pp=0;
+	while(CODE_BIN[i]!='\0'){
+    if(m <= rest){
+    	int j=0;
+    	while(m>0){
+			tabCode[8-rest]=CODE_BIN[i];
+        	i+=1;
+        	rest-=1;
+        	m-=1;
+      	}
+      	int CPT=rest;//bits de completion
+      	for(j=0;j<CPT;j++){
+      		tabCode[8-rest]='0';
+      		rest-=1;
+      	}
+     tabCode[8]='\0';
+     pp=bin_to_dec(tabCode);
+     ppconv=pp;
+     fwrite(&ppconv,sizeof(char),1,fic);
+     taillefin+=8;
+      m-=1;
+    }
+    else{
+      while(rest!=0){
+		tabCode[8-rest]=CODE_BIN[i];
+		i+=1;
+		rest-=1;
+      }
+      tabCode[8]='\0';
+      pp=bin_to_dec(tabCode);
+      ppconv=(char) pp;
+      fwrite(&ppconv,sizeof(char),1,fic);
+      taillefin+=8;
+      m-=8;
+      rest=8;
     }
   }
-*/
-  /*AJOUT EN ENTETE DES DONNEES DE DECODAGE*/
-  FILE* fic=NULL;
-  fic=fopen(argv[2],"w");
-  int Lcode;
-  char Tcar;
-  char LcodeChar;
-  //fwrite(&nbBits,sizeof(char),1,fic);
-  for(i=0;i<nbfeuille;i++){
-    Lcode=taille_c(tabNoeud[i].code);
-    LcodeChar='0'+Lcode;
-    Tcar=tabNoeud[i].symbole;
-    fwrite(&Tcar,sizeof(char),1,fic);
-    fwrite(&LcodeChar,sizeof(char),1,fic);
-    fwrite(tabNoeud[i].code,Lcode*sizeof(char),1,fic);
-  }
-  fwrite("&",sizeof(char),1,fic);
-  fwrite("&",sizeof(char),1,fic);
-  fclose(fic);
 
+	fwrite("&",sizeof(char),1,fic);
+	free(tabCode);
+	taillefin+=16;
+	unsigned int Lcode;
+	char Tcar;
+	char LcodeChar;
+	for(i=0;i<nbfeuille;i++){
+		Lcode=taille_c(tabNoeud[i].code);
+		LcodeChar='0'+Lcode;
+		Tcar=tabNoeud[i].symbole;
+		fwrite(&Tcar,sizeof(char),1,fic);//le char
+		fwrite(&LcodeChar,sizeof(char),1,fic);//la taille de son code
+		fwrite(tabNoeud[i].code,Lcode*sizeof(char),1,fic);//le code
+		taillefin+=16+(Lcode*8);
+	}
+	fwrite("&",sizeof(char),1,fic);
+	fwrite("&",sizeof(char),1,fic);
+	taillefin+=16;
+	fclose(fic);
 
-  /*Remplissage d'un fichier compressé*/
-  FILE *x=fopen(argv[1],"r");
-  FILE *y=fopen(argv[2],"a");
-  char k=0;
-  int rest=0;
-  int lcode=0;
-  int m=0;
-  char *tabCodes=malloc(sizeof(char)*8);
-  init(tabCodes);
+//Remplissage d'un fichier compressé
+
+	FILE *x=fopen(argv[1],"r");
+	FILE *y=fopen(argv[2],"a");
+	char k=0;
+	unsigned char *tabCodes=malloc(sizeof(char)*9);
+	init_octet(tabCodes);
 	
-  while(EOF!=(k=fgetc(x))){
-    i=0;
-    while(k!=tabNoeud[i].symbole){//cherche l'indice du tabNoeud correspondant au caractère lu
+	while(EOF!=(k=fgetc(x))){
+		i=0;
+		while(k!=tabNoeud[i].symbole){
       i+=1;
     }
     rest=reste(tabCodes);
     lcode=taille_c(tabNoeud[i].code);
-    m=0;
-    if(lcode <= rest){//si y'à assez d'espace dans tabCodes il y fou le tabNoeud[i].code correspondant et passe au char suivant
+    nn=0;
+    if(lcode = rest){
+	  int j=0;
+      for(j=0;j<lcode;j++){
+        tabCodes[8-rest]=tabNoeud[i].code[nn];
+        nn+=1;
+        rest-=1;
+		}
+	tabCodes[8]='\0';
+    pp=bin_to_dec(tabCodes);
+    ppconv=pp; 
+    fwrite(&ppconv,sizeof(char),1,y);
+    taillefin+=8;
+    init_octet(tabCodes);
+    rest=reste(tabCodes);
+	}
+    else if(lcode < rest){
       int j=0;
       for(j=0;j<lcode;j++){
-        tabCodes[8-rest]=tabNoeud[i].code[m];
-        m+=1;
+        tabCodes[8-rest]=tabNoeud[i].code[nn];
+        nn+=1;
         rest-=1;
       }
     }
-    else{//s'il n'y à pas assez de place
-      while(rest!=0){//et tant qu'il y a de la place, tu rempli
-	tabCodes[8-rest]=tabNoeud[i].code[m];
-	m+=1;
-	rest-=1;
+    else{
+      while(rest!=0){
+		tabCodes[8-rest]=tabNoeud[i].code[nn];
+		nn+=1;
+		rest-=1;
       }
-      int pp=0;
-      pp=convert_b_d(tabCodes);
-      char ppconv=pp; 
-      fwrite(&ppconv,sizeof(char),1,y);
-      taillefin+=8;
-      init(tabCodes);
-      rest=reste(tabCodes);
-      while(m<lcode){
-	     tabCodes[8-rest]=tabNoeud[i].code[m];
-	     m+=1;
-	     rest-=1;
-      } 
+	tabCodes[8]='\0';
+    pp=bin_to_dec(tabCodes);
+    ppconv=pp; 
+    fwrite(&ppconv,sizeof(char),1,y);
+    taillefin+=8;
+    init_octet(tabCodes);
+    rest=reste(tabCodes);
+	while((nn<lcode) && (rest>0)){
+		tabCodes[8-rest]=tabNoeud[i].code[nn];
+		nn+=1;
+		rest-=1;
+	}
     }
   }
 
-  /*Vidage du buffer tabCodes s'il y à des restes*/
+//Vidage du buffer tabCodes s'il y à des restes
   if (k==EOF){
-    char *temp=malloc(sizeof(char)*8);
+    unsigned char *temp=malloc(sizeof(char)*9);
     for(i=0;i<8;i++){
       if(tabCodes[i] != '2'){
 	     temp[i]=tabCodes[i];
@@ -249,8 +317,9 @@ int main(int argc, char* argv[]){
 	     temp[i]='0';
       }
     }
+    tabCodes[8]='\0';
     int der=0;
-    der=convert_b_d(temp);
+    der=bin_to_dec(temp);
     char derconv=der;
     fwrite(&derconv,sizeof(char),1,y);
     taillefin+=8;
@@ -261,7 +330,8 @@ int main(int argc, char* argv[]){
   fclose(y);
 
 
-  /*Calcul longeur moyenne de codage*/
+//Calcul longeur moyenne de codage
+taillefin-=1;
   float lm=0;
   int p=0;
   i=0;
